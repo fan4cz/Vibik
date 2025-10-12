@@ -4,7 +4,7 @@ using Npgsql;
 
 namespace Infrastructure;
 
-public static partial class DataBaseManager
+public static class DataBaseManager
 {
     private static string dbConnectionString;
 
@@ -58,8 +58,9 @@ public static partial class DataBaseManager
 
     private static bool IsValidSqlIdentifier(string identifier)
     {
+        // Только буквы, цифры, подчеркивания, без SQL-ключевых слов
         return !string.IsNullOrWhiteSpace(identifier) &&
-               MyRegex().IsMatch(identifier) &&
+               Regex.IsMatch(identifier, @"^[a-zA-Z_][a-zA-Z0-9_]*$") &&
                !IsSqlKeyword(identifier);
     }
 
@@ -79,7 +80,4 @@ public static partial class DataBaseManager
         public string Error { get; private set; } = error;
         public bool IsSuccess { get; private set; } = isSuccess;
     }
-
-    [GeneratedRegex(@"^[a-zA-Z_][a-zA-Z0-9_]*$")]
-    private static partial Regex MyRegex();
 }
